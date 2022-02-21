@@ -1,0 +1,39 @@
+version: '3.9'
+
+services:
+
+  # MongoDB Service
+  mongo_db:
+    container_name: db_container
+    image: mongo:latest
+    restart: always
+    volumes:
+      - mongo_db:/data/db
+    networks:
+      - the-dynamics-network
+
+  # Node API Service
+  api:
+    container_name: api_container
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "4000:1244"
+    environment:
+      PORT: 1244
+      NODE_ENV: development
+      MONGODB_URI: mongodb://mongo_db:27017/the-dynamics
+      JWT_SECRET: secret
+    depends_on:
+      - mongo_db
+    networks:
+      - the-dynamics-network
+
+networks:
+  the-dynamics-network:
+    driver: bridge
+
+volumes:
+  mongo_db: {}

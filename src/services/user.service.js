@@ -20,6 +20,13 @@ class UserService {
         return user;
     }
 
+    async getOneByEmail(email) {
+        const user = await User.findOne({ email }, { password: 0, __v: 0 });
+        if (!user) throw new CustomError("User does not exist", 404);
+
+        return user;
+    }
+
     async update(userId, data) {
         const user = await User.findByIdAndUpdate(
             { _id: userId },

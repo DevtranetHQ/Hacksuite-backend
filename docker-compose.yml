@@ -37,7 +37,7 @@ services:
       dockerfile: Dockerfile
     restart: always
     ports:
-      - "8080:80"
+      - "80:80"
     depends_on:
       - api
       - mongo_db

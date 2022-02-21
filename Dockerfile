@@ -14,5 +14,8 @@ RUN yarn install
 # copying the source code of Application into the container dir
 COPY . /app
 
+# our app is running on port 5000 within the container, so need to expose it
+EXPOSE 5000
+
 # command to run within the container
 CMD ["yarn", "start"]

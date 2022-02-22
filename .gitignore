@@ -3,6 +3,7 @@ node_modules
 
 # production env files
 .env
+certbot/logs
 
 # exclude files in uploads
 uploads/*

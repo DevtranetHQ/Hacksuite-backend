@@ -14,7 +14,7 @@ router.use("/integrations", require("./integration.route"));
 router.get("/", (req, res) => {
     return res
         .status(200)
-        .json({ message: "Hello world from the-dynamics! :)" });
+        .json({ message: "Hi there nerd from the-dynamics! :)" });
 });
 
 module.exports = router;

@@ -20,7 +20,7 @@ jobs:
       with:
         key: ${{ secrets.AWS_PRIVATE_KEY }}
         host: ${{ secrets.HOSTNAME }}
-        username: ${{ secrets.USERNAME }}
+        username: ${{ secrets.USER_NAME }}
         script: |
           cd api-backend/
           git fetch

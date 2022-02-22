@@ -37,24 +37,12 @@ services:
       dockerfile: Dockerfile
     restart: always
     ports:
-      - 80:80
-      - 443:443
+      - "80:80"
     depends_on:
       - api
       - mongo_db
     networks:
       - the-dynamics-network
-    volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-    command: "/bin/sh -c 'while :; do sleep 6h & wait $${!}; nginx -s reload; done & nginx -g \"daemon off;\"'"
-
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www/certbot
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'"
 
 networks:
   the-dynamics-network:

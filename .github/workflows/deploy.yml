@@ -25,4 +25,31 @@ jobs:
           cd api-backend/
           git fetch
           git reset --hard origin/main
-          docker-compose up -d --build
+          name: CI Workflow
+
+on: 
+  push:
+    branches: [ main ]
+
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        key: ${{ secrets.AWS_PRIVATE_KEY }}
+        host: ${{ secrets.HOSTNAME }}
+        username: ${{ secrets.USER_NAME }}
+        script: |
+          cd api-backend/
+          git fetch
+          git reset --hard origin/main
+          docker-compose up -d

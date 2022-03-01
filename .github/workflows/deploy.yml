@@ -13,16 +13,16 @@ jobs:
     steps:
     - uses: actions/checkout@v2
 
-    # - name: Deploy to EC2
-    #   uses: appleboy/ssh-action@master
-    #   env:
-    #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    #   with:
-    #     key: ${{ secrets.AWS_PRIVATE_KEY }}
-    #     host: ${{ secrets.HOSTNAME }}
-    #     username: ${{ secrets.USER_NAME }}
-    #     script: |
-    #       cd api-backend/
-    #       git fetch
-    #       git reset --hard origin/main 
-    #       docker-compose up -d
+    - name: Deploy to EC2
+      uses: appleboy/ssh-action@master
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        key: ${{ secrets.AWS_PRIVATE_KEY }}
+        host: ${{ secrets.HOSTNAME }}
+        username: ${{ secrets.USER_NAME }}
+        script: |
+          cd api-backend/
+          git fetch
+          git reset --hard origin/main 
+          docker-compose up -d

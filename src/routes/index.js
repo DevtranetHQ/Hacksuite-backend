@@ -1,7 +1,12 @@
 const router = require("express").Router();
+const bodyParser = require('body-parser');
 
 // Trim all incoming requests
 router.use(require("./../middlewares/trim-incoming-requests.middleware"));
+
+//middleware for parsing different data types
+router.use(bodyParser.json());
+router.use(bodyParser.urlencoded({ extended: true }));
 
 router.use("/auth", require("./auth.route"));
 

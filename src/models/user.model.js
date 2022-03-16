@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema(
             maxLength:[80, "Email can't be more than 80 characters"],
             immutable: [true, "Email is immutable"],
             lowerCase:true,
-            match:["/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/", "{VALUE is not a valid email}"]
+            match:[/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/, "{VALUE is not a valid email}"]
         },
         password: {
             type: String,
@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema(
         phoneNumer:{
             type:Number,
             trim:true,
-            match: ["^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$", "{VALUE} not a valid phone number"],
+            match: [/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/, "{VALUE} not a valid phone number"],
         },
         levelOfStudy:{
             type:String,

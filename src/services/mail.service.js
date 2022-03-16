@@ -45,7 +45,7 @@ class MailService {
 
     async sendEmailVerificationMail(link) {
         const subject = "Email Verification";
-        const content = `Hey ${this.user.name}, Please click on the link to verify your email ${link}`;
+        const content = `Hi ${this.user.firstName?this.user.firstName:''}! Please click on the link to verify your email ${link}`;
         const recipient = this.user.email;
 
         return await this.send(subject, content, recipient);

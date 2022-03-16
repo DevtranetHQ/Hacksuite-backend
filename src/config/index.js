@@ -11,12 +11,11 @@ const config = {
         CLIENT_URL: process.env.CLIENT_URL || "http://localhost:3000"
     },
     mailer: {
-        HOST: "",
-        USER: "",
-        PASSWORD: "",
-        PORT: "",
-        SECURE: "",
-        DOMAIN: "@the-dynamics.com"
+        HOST: "smtp.gmail.com",
+        USER: "thedynamics.us@gmail.com",
+        PASSWORD: "rmqptshkajvdjtbv",
+        PORT: 465,
+        SECURE: true,
     }
 };
 

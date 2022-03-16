@@ -19,22 +19,27 @@ class MailService {
         const transporter = nodemailer.createTransport({
             host: mailer.HOST,
             port: mailer.PORT,
-            secure: mailer.SECURE,
+            secure: true,
             auth: {
                 user: mailer.USER,
                 pass: mailer.PASSWORD
             }
         });
-
-        const result = await transporter.sendMail({
-            from,
-            to: Array.isArray(recipient) ? recipient.join() : recipient,
-            subject,
-            text: content
-        });
-
+        
+        let result;
+        try{
+            result = await transporter.sendMail({
+                from,
+                to: Array.isArray(recipient) ? recipient.join() : recipient,
+                subject,
+                text: content
+            });
+        }
+        catch{
+            throw new CustomError("Cannot send email. Invalid transporter.")
+        }
+        
         if (!result) throw new CustomError("Unable to send mail");
-
         return result;
     }
 

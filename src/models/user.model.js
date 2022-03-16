@@ -56,13 +56,13 @@ const userSchema = new mongoose.Schema(
             type:String,
             enum:
             {
-                values:countryNames,
+                values: countryNames,
                 message:"{VALUE is not a valid country}"
             },
         },
         birthdate:{
-            type:Date,
-            min:Date.now(),
+            type: Date,
+            max: Date.now(),
         },
         role: {
             type: String,

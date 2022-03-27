@@ -66,11 +66,11 @@ class AuthService {
 
         const VToken = await Token.findOne({ userId });
         if (!VToken)
-            throw new CustomError("Invalid or expired password reset token");
+            throw new CustomError("Invalid or expired password");
 
         const isValid = await bcrypt.compare(verifyToken, VToken.token);
         if (!isValid)
-            throw new CustomError("Invalid or expired password reset token");
+            throw new CustomError("Invalid or expired password");
 
         await User.updateOne(
             { _id: userId },

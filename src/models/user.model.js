@@ -1,10 +1,11 @@
-const bcrypt = require("bcryptjs");
 const mongoose = require("mongoose");
-const countryNames = require("../utils/countryNames")
+const Schema = mongoose.Schema;
+const bcrypt = require("bcryptjs");
 const { BCRYPT_SALT } = require("../config");
+const countryNames = require("../utils/countryNames")
 
 
-const userSchema = new mongoose.Schema(
+const userSchema = new Schema(
     {
         firstName: {
             type: String,
@@ -73,6 +74,10 @@ const userSchema = new mongoose.Schema(
         isVerified: {
             type: Boolean,
             default: false
+        },
+        events: {
+            type: [Schema.Types.ObjectId],
+            ref: 'events',
         }
     },
     {
@@ -116,4 +121,3 @@ userSchema.pre("save", async function (next) {
 
 
 module.exports = mongoose.model("users", userSchema);
-

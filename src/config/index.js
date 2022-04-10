@@ -15,7 +15,7 @@ const config = {
         USER: "thedynamics.us@gmail.com",
         PASSWORD: "rmqptshkajvdjtbv",
         PORT: 465,
-        SECURE: true,
+        SECURE: true
     }
 };
 

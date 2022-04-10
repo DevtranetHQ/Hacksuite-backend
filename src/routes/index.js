@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const bodyParser = require('body-parser');
+const bodyParser = require("body-parser");
 
 // Trim all incoming requests
 router.use(require("./../middlewares/trim-incoming-requests.middleware"));

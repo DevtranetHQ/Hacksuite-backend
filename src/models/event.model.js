@@ -12,7 +12,10 @@ const eventSchema = new Schema(
         image: {
             type: String,
             required: true,
-            match: [/[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/, "{VALUE isnt a valid link}"]
+            match: [
+                /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/,
+                "{VALUE isnt a valid link}"
+            ]
         },
         description: {
             type: String,
@@ -27,12 +30,12 @@ const eventSchema = new Schema(
         },
         creator: {
             type: Schema.Types.ObjectId,
-            ref: 'users',
+            ref: "users",
             required: ["creator is required"]
         },
         attendees: {
             type: [Schema.Types.ObjectId],
-            ref: 'users',
+            ref: "users"
         }
     },
     {

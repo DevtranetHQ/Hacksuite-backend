@@ -25,27 +25,28 @@ class MailService {
                 pass: mailer.PASSWORD
             }
         });
-        
+
         let result;
-        try{
+        try {
             result = await transporter.sendMail({
                 from,
                 to: Array.isArray(recipient) ? recipient.join() : recipient,
                 subject,
                 text: content
             });
+        } catch {
+            throw new CustomError("Cannot send email. Invalid transporter.");
         }
-        catch{
-            throw new CustomError("Cannot send email. Invalid transporter.")
-        }
-        
+
         if (!result) throw new CustomError("Unable to send mail");
         return result;
     }
 
     async sendEmailVerificationMail(link) {
         const subject = "Email Verification";
-        const content = `Hi ${this.user.firstName?this.user.firstName:''}! Please click on the link to verify your email ${link}`;
+        const content = `Hi ${
+            this.user.firstName ? this.user.firstName : ""
+        }! Please click on the link to verify your email ${link}`;
         const recipient = this.user.email;
 
         return await this.send(subject, content, recipient);

@@ -9,7 +9,6 @@ const MailService = require("./../services/mail.service");
 const { JWT_SECRET, BCRYPT_SALT, url } = require("./../config");
 
 class AuthService {
-
     async register(data) {
         let user = await User.findOne({ email: data.email });
         if (user) throw new CustomError("Email already exists");
@@ -65,12 +64,10 @@ class AuthService {
         if (user.isVerified) throw new CustomError("Email is already verified");
 
         const VToken = await Token.findOne({ userId });
-        if (!VToken)
-            throw new CustomError("Invalid or expired password");
+        if (!VToken) throw new CustomError("Invalid or expired password");
 
         const isValid = await bcrypt.compare(verifyToken, VToken.token);
-        if (!isValid)
-            throw new CustomError("Invalid or expired password");
+        if (!isValid) throw new CustomError("Invalid or expired password");
 
         await User.updateOne(
             { _id: userId },

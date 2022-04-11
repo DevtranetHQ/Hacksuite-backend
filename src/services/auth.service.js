@@ -41,8 +41,13 @@ class AuthService {
         const isCorrect = await bcrypt.compare(data.password, user.password);
         if (!isCorrect) throw new CustomError("Incorrect email or password");
 
-        const token = await JWT.sign(
-            { id: user._id, role: user.role },
+        const token = JWT.sign(
+            {
+                id: user._id,
+                role: user.role,
+                firstName: user.firstName,
+                lastName: user.lastName
+            },
             JWT_SECRET,
             { expiresIn: 60 * 60 }
         );

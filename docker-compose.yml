@@ -1,63 +1,62 @@
-version: '3.9'
+version: "3.9"
 
 services:
+    # MongoDB Service
+    mongo_db:
+        container_name: db_container
+        image: mongo:latest
+        restart: always
+        volumes:
+            - mongo_db:/data/db
+        networks:
+            - the-dynamics-network
 
-  # MongoDB Service
-  mongo_db:
-    container_name: db_container
-    image: mongo:latest
-    restart: always
-    volumes:
-      - mongo_db:/data/db
-    networks:
-      - the-dynamics-network
+    # Node API Service
+    api:
+        container_name: api_container
+        build:
+            context: .
+            dockerfile: Dockerfile
+        restart: always
+        environment:
+            PORT: 5000
+            NODE_ENV: development
+            MONGODB_URI: mongodb://mongo_db:27017/the-dynamics
+            JWT_SECRET: secret
+        depends_on:
+            - mongo_db
+        networks:
+            - the-dynamics-network
 
-  # Node API Service
-  api:
-    container_name: api_container
-    build:
-      context: .
-      dockerfile: Dockerfile
-    restart: always
-    environment:
-      PORT: 5000
-      NODE_ENV: development
-      MONGODB_URI: mongodb://mongo_db:27017/the-dynamics
-      JWT_SECRET: secret
-    depends_on:
-      - mongo_db
-    networks:
-      - the-dynamics-network
+    # NGINX Service
+    nginx:
+        container_name: nginx_container
+        image: nginx:latest
+        restart: always
+        ports:
+            - "80:80"
+            - "443:443"
+        depends_on:
+            - api
+            - mongo_db
+        networks:
+            - the-dynamics-network
+        volumes:
+            - ./nginx/conf.d:/etc/nginx/conf.d
+            - ./nginx/dhparam:/etc/nginx/dhparam
+            - ./certbot/conf/:/etc/nginx/ssl/
+            - ./certbot/data:/usr/share/nginx/html/letsencrypt
 
-  # NGINX Service
-  nginx:
-    container_name: nginx_container
-    image: nginx:latest
-    restart: always
-    ports:
-      - "80:80"
-      - "443:443"
-    depends_on:
-      - api
-      - mongo_db
-    networks:
-      - the-dynamics-network
-    volumes:
-      - ./nginx/conf.d:/etc/nginx/conf.d
-      - ./nginx/dhparam:/etc/nginx/dhparam
-      - ./certbot/conf/:/etc/nginx/ssl/
-      - ./certbot/data:/usr/share/nginx/html/letsencrypt
-
-  certbot:
-    image: certbot/certbot
-    volumes:
-      - ./certbot/conf/:/etc/letsencrypt
-      - ./certbot/logs/:/var/log/letsencrypt
-      - ./certbot/data:/usr/share/nginx/html/letsencrypt
+    certbot:
+        image: certbot/certbot
+        volumes:
+            - ./certbot/conf/:/etc/letsencrypt
+            - ./certbot/logs/:/var/log/letsencrypt
+            - ./certbot/data:/usr/share/nginx/html/letsencrypt
 
 networks:
-  the-dynamics-network:
-    driver: bridge
+    the-dynamics-network:
+        driver: bridge
 
 volumes:
-  mongo_db: {}
+    mongo_db: {}

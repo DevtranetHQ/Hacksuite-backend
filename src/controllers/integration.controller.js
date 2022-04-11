@@ -8,7 +8,9 @@ class IntegrationContoller {
     }
 
     async discordResendVerificationEmail(req, res) {
-        const result = await IntegrationService.discordResendVerificationEmail(req.body);
+        const result = await IntegrationService.discordResendVerificationEmail(
+            req.body
+        );
         res.status(201).send(response("email verification sent", result));
     }
 }

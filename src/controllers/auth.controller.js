@@ -20,7 +20,9 @@ class AuthContoller {
     }
 
     async requestEmailVerification(req, res) {
-        const result = await AuthService.requestEmailVerification(req.query.email);
+        const result = await AuthService.requestEmailVerification(
+            req.query.email
+        );
         res.status(200).send(response("email verfication link sent", result));
     }
 

@@ -2,68 +2,77 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 const bcrypt = require("bcryptjs");
 const { BCRYPT_SALT } = require("../config");
-const countryNames = require("../utils/countryNames")
-
+const countryNames = require("../utils/countryNames");
 
 const userSchema = new Schema(
     {
         firstName: {
             type: String,
             trim: true,
-            maxLength:[50, "First name can't be more than 50 characters"],
+            maxLength: [50, "First name can't be more than 50 characters"],
             required: [true, "First name is required"],
-            lowerCase:true
+            lowerCase: true
         },
         lastName: {
             type: String,
             trim: true,
-            maxLength:[50, "Last name can't be more than 50 characters"],
+            maxLength: [50, "Last name can't be more than 50 characters"],
             required: [true, "Last name is required"],
-            lowerCase:true
+            lowerCase: true
         },
         email: {
             type: String,
             trim: true,
             unique: true,
             required: [true, "Email is required"],
-            maxLength:[80, "Email can't be more than 80 characters"],
+            maxLength: [80, "Email can't be more than 80 characters"],
             immutable: [true, "Email is immutable"],
-            lowerCase:true,
-            match:[/^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/, "{VALUE is not a valid email}"]
+            lowerCase: true,
+            match: [
+                /^[a-zA-Z0-9.!#$%&’*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/,
+                "{VALUE is not a valid email}"
+            ]
         },
         password: {
             type: String,
             required: [true, "Password is required"],
-            min:6
+            min: 6
         },
-        phoneNumer:{
-            type:Number,
-            trim:true,
-            match: [/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/, "{VALUE} not a valid phone number"],
+        phoneNumer: {
+            type: Number,
+            trim: true,
+            match: [
+                /^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/,
+                "{VALUE} not a valid phone number"
+            ]
         },
-        levelOfStudy:{
-            type:String,
-            enum:
-            {
-                values: ["middle school","high school", "bachelor's", "master's", "doctoral"],
+        levelOfStudy: {
+            type: String,
+            enum: {
+                values: [
+                    "middle school",
+                    "high school",
+                    "bachelor's",
+                    "master's",
+                    "doctoral"
+                ],
                 message: "{VALUE} is not a valid level of study"
-            },
+            }
         },
-        gender:{
-            type:String,
-            enum:["Female", "Male", "Non-binary", "Other"],
+        gender: {
+            type: String,
+            enum: ["Female", "Male", "Non-binary", "Other"]
         },
-        countryofResidence:{
-            type:String,
-            enum:
-            {
+        countryofResidence: {
+            type: String,
+            enum: {
                 values: countryNames,
-                message:"{VALUE is not a valid country}"
-            },
+                message: "{VALUE is not a valid country}"
+            }
         },
-        birthdate:{
+        birthdate: {
             type: Date,
-            max: Date.now(),
+            max: Date.now()
         },
         role: {
             type: String,
@@ -77,38 +86,36 @@ const userSchema = new Schema(
         },
         events: {
             type: [Schema.Types.ObjectId],
-            ref: 'events',
+            ref: "events"
         }
     },
     {
         timestamps: true
     }
-
 );
 
 /*virtual fields*/
-userSchema.virtual("age")
-.get(function(){
+userSchema.virtual("age").get(function () {
     return (Date.now() - this.birthdate).getYear();
-})
+});
 
-userSchema.virtual('fullName').
-  get(function() { 
-      var fullname = '';
-      if (this.first_name && this.family_name) {
-      fullname = this.family_name + ', ' + this.first_name
-      }
-      if (!this.first_name || !this.family_name) {
-      fullname = '';
-      }
-      return fullname;
-   }).
-  set(function(v) {
-    const firstName = v.substring(0, v.indexOf(' '));
-    const lastName = v.substring(v.indexOf(' ') + 1);
-    this.set({ firstName, lastName });
-  });
-
+userSchema
+    .virtual("fullName")
+    .get(function () {
+        var fullname = "";
+        if (this.first_name && this.family_name) {
+            fullname = this.family_name + ", " + this.first_name;
+        }
+        if (!this.first_name || !this.family_name) {
+            fullname = "";
+        }
+        return fullname;
+    })
+    .set(function (v) {
+        const firstName = v.substring(0, v.indexOf(" "));
+        const lastName = v.substring(v.indexOf(" ") + 1);
+        this.set({ firstName, lastName });
+    });
 
 /*middlewares*/
 userSchema.pre("save", async function (next) {
@@ -117,7 +124,5 @@ userSchema.pre("save", async function (next) {
     this.password = hash;
     next();
 });
-
-
 
 module.exports = mongoose.model("users", userSchema);

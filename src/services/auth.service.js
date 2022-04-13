@@ -41,6 +41,9 @@ class AuthService {
         const isCorrect = await bcrypt.compare(data.password, user.password);
         if (!isCorrect) throw new CustomError("Incorrect email or password");
 
+        // check if user is verified
+        if (!user.isVerified) throw new CustomError("User is not verified");
+
         const token = JWT.sign(
             {
                 id: user._id,
@@ -62,14 +65,14 @@ class AuthService {
     }
 
     async verifyEmail(data) {
-        const { userId, verifyToken } = data;
+        const { userId, verifyToken, login } = data;
 
         const user = await User.findOne({ _id: userId });
         if (!user) throw new CustomError("User does not exist");
         if (user.isVerified) throw new CustomError("Email is already verified");
 
         const VToken = await Token.findOne({ userId });
-        if (!VToken) throw new CustomError("Invalid or expired password");
+        if (!VToken) throw new CustomError("Invalid or expired token");
 
         const isValid = await bcrypt.compare(verifyToken, VToken.token);
         if (!isValid) throw new CustomError("Invalid or expired password");
@@ -81,6 +84,21 @@ class AuthService {
         );
 
         await VToken.deleteOne();
+
+        if (login) {
+            const loginToken = JWT.sign(
+                {
+                    id: user._id,
+                    role: user.role,
+                    firstName: user.firstName,
+                    lastName: user.lastName
+                },
+                JWT_SECRET,
+                { expiresIn: 60 * 60 }
+            );
+
+            return { loginToken };
+        }
 
         return;
     }
@@ -102,7 +120,7 @@ class AuthService {
             createdAt: Date.now()
         }).save();
 
-        const link = `${url.CLIENT_URL}/email-verification?uid=${user._id}&verifyToken=${verifyToken}`;
+        const link = `${url.CLIENT_URL}/email-verification?uid=${user._id}&verifyToken=${verifyToken}&login=true`;
 
         // Send Mail
         await new MailService(user).sendEmailVerificationMail(link);
